@@ -3,12 +3,10 @@ title: "Lifestyle Choices and Level of Lung Cancer - A Statistical Inquiry "
 output:
   pdf_document: default
   html_document: default
-date: "2023-05-04"
 ---
 
 # Introduction
-
-Hello everyone, we are Group - 4, our Team members are Osama, Vishra, Mansi and Zahra. 
+ 
 Allow me to share some insights about the dataset we have chosen, which is about Lung Cancer prediction and can be found on Kaggle accessible via https://www.kaggle.com/datasets/thedevastator/cancer-patients-and-air-pollution-a-new-link 
 
 Deaths due to lung cancer is common in the world where smoking and exposure to environmental toxins are two significant risk factors. This data set contains 26 variables and 1000 rows where 1 variable is numerical (age) and rest of them are categorical variables counted on scales of 1 to 7 or 1 to 8. The data set was published in Journal - Nature Medicine, where 462,000 people residing in 2 areas where one area had a lower rate of pollution, and the other area included a higher rate of pollution were followed for 6 years.
