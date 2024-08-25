@@ -1,0 +1,323 @@
+---
+title: "Lifestyle Choices and Level of Lung Cancer - A Statistical Inquiry "
+output:
+  pdf_document: default
+  html_document: default
+date: "2023-05-04"
+---
+
+# Introduction
+
+Hello everyone, we are Group - 4, our Team members are Osama, Vishra, Mansi and Zahra. 
+Allow me to share some insights about the dataset we have chosen, which is about Lung Cancer prediction and can be found on Kaggle accessible via https://www.kaggle.com/datasets/thedevastator/cancer-patients-and-air-pollution-a-new-link 
+
+Deaths due to lung cancer is common in the world where smoking and exposure to environmental toxins are two significant risk factors. This data set contains 26 variables and 1000 rows where 1 variable is numerical (age) and rest of them are categorical variables counted on scales of 1 to 7 or 1 to 8. The data set was published in Journal - Nature Medicine, where 462,000 people residing in 2 areas where one area had a lower rate of pollution, and the other area included a higher rate of pollution were followed for 6 years.
+
+# Objective 
+
+The overall objective of this project is to advance knowledge of the intricate connection between lifestyle choices and lung cancer risk to offer insights that can guide public health initiatives and prevention methods.
+
+# Purpose 
+The Purpose of this study is to understand different variables and how different lifestyle factors can contribute or influence the level of lung cancer.
+
+# Research Design
+A Quantitative approach has been used for this study where a correlation type of research design has been implemented using secondary data collected over an average of 6 years from a community residing in China where relationship between lifestyle factors and level of pollution has been analysed.
+
+# Exploratory Data Analysis 
+
+We will perform exploratory data analysis of our data set to understand the distribution of data, existing null values, existence of duplicate values and understand the relationship of different variables with each other and their relationship with the target variable. It enables us to precisely understand the variables and summarize the key insights for statistical interpretation of the hypothesis defined. It enables a thorough comprehension of the data set , the definition or rejection of hypotheses.
+
+## Reading the dataset
+
+```{r}
+df <- read.csv("~/cancer patient data sets.csv")
+head(df)
+```
+## Shape of the dataset
+
+```{r}
+dim(df)
+
+```
+## Checking for null values
+```{r}
+colSums(is.na(df))
+
+```
+## Checking for duplicates
+
+```{r}
+df[duplicated(df),]
+
+```
+
+## Checking the data types of all columns
+```{r}
+str(df)
+```
+# Research Question
+Which lifestyle factor has the highest influence on the level of lung cancer?
+
+# Null hypothesis
+There is no significant relationship between the variables depicting lifestyle choices and the level of lung cancer.
+
+# Alternate hypothesis
+There is a significant relationship between the variables depicting lifestyle choices and the level of lung cancer.
+
+# Target variable - Level of Cancer
+
+Here, after understanding the data from EDA and research question along with forming a hypothesis for the data set, we need to convert categorical columns into categorical data so that statistical tests can be performed efficiently and it becomes easier to further do hypothesis testing and data visualization of the variables.
+
+## Converting the categorical columns into categorical data
+```{r}
+# Convert columns 4 to n to factors
+df[, 4:(ncol(df))] <- lapply(df[, 4:(ncol(df))], factor)
+# Print the structure of the dataframe
+str(df)
+```
+
+Lets do descriptive statistics of the data frame to understand essential elements of the data set and the summary will help in making an informed decision about the data sample and its measurements.
+
+## Summary of the dataset
+
+```{r}
+summary(df)
+```
+Our chosen significance level is 0.05 (Standard).
+As our sample size is 1000 rows and 26 variables of which are categorical variables except age, we are doing fisher's exact test by doing a contingency table of each column with our target variable. Fisher's test will also give us a simulated p-value for the size of the data set hence we are using this test rather than using any other statistical testing. 
+
+## Performing statistical tests to know the significant variables
+
+```{r}
+# Define the column names of interest
+cols <- c("Age","Gender", "Air.Pollution", "Alcohol.use", "Dust.Allergy",
+          "OccuPational.Hazards", "Genetic.Risk", "chronic.Lung.Disease",
+          "Balanced.Diet", "Obesity", "Smoking", "Passive.Smoker",
+          "Chest.Pain", "Coughing.of.Blood", "Fatigue", "Weight.Loss",
+          "Shortness.of.Breath", "Wheezing", "Swallowing.Difficulty",
+          "Clubbing.of.Finger.Nails", "Frequent.Cold", "Dry.Cough",
+          "Snoring")
+
+# Create an empty list to store the test results
+fisher_results <- list()
+
+# Iterate over each column and perform Fisher's exact test
+for (col in cols) {
+  # Create a contingency table of the column and the target column
+  cont_table <- table(df[, col], df$Level)
+  # Perform Fisher's exact test
+  fisher_result <- fisher.test(cont_table, simulate.p.value = TRUE, B = 1000)
+  # Store the test result in the list
+  fisher_results[[col]] <- fisher_result}
+# Print the test results
+fisher_results
+```
+
+After seeing the Fisher's Exact test results we can see that a simulated p-value has been generated based on the 1000 replicates for the dataset, in all the variables the simulated p-value is lesser than chosen significance 0.05 hence we can understand from this that there is a significant association between the variables and the target variable.
+
+## Plotting the histogram of the numerical variable
+```{r}
+hist(df$Age, main = "Histogram of Age", xlab = "Age")
+```
+
+
+The histogram showcases the distribution of participants based on their age where the highest count lies between 30-35 years of age.
+
+In order to understand the effect of lifestyle variables on the level of lung cancer we are going to plot few plots which will help us understand the target variable's association with other lifestyle variables.
+
+## Checking the influence of Obesity on the level of cancer
+```{r}
+library(ggplot2)
+
+ggplot(df, aes(x = Obesity, fill = Level)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Influence of Obesity on Cancer Level",
+       x = "Obesity",
+       y = "Count",
+       fill = "Level")
+```
+
+
+The graph represents the relationship between the level of cancer and obesity. As obesity increases the risk of cancer increases.
+
+## Checking the influence of Alcohol use on the level of cancer
+
+```{r}
+library(ggplot2)
+
+ggplot(df, aes(x = Alcohol.use, fill = Level)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Influence of Alcohol use on Cancer Level",
+       x = "Alcohol use",
+       y = "Count",
+       fill = "Level")
+
+
+  
+
+```
+
+
+The graph represents the relationship between the level of cancer and Alcohol Consumption. The risk of cancer increases with increased consumption of alcohol.
+
+
+## Checking the influence of Smoking on the level of cancer
+
+```{r}
+library(ggplot2)
+
+ggplot(df, aes(x = Smoking, fill = Level)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Influence of Smoking on Cancer Level",
+       x = "Smoking",
+       y = "Count",
+       fill = "Level")
+
+
+  
+
+```
+
+
+The graph represents the relationship between the level of cancer and Smoking. The relationship seems to be non-linear as we can see a high level of cancer for both lower and higher level of smoking.
+
+
+## Checking the influence of Passive Smoking on the level of cancer
+
+```{r}
+library(ggplot2)
+
+ggplot(df, aes(x = Passive.Smoker, fill = Level)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Influence of Passive smoking on Cancer Level",
+       x = "Passive smoking",
+       y = "Count",
+       fill = "Level")
+
+
+  
+
+```
+
+
+The graph represents the relationship between the level of Cancer and Exposure to Passive Smoking. High exposure to passive smoking increases the probability of cancer occurrence.
+
+
+## Checking the influence of Balanced Diet on the level of cancer
+
+```{r}
+library(ggplot2)
+
+ggplot(df, aes(x = Balanced.Diet, fill = Level)) +
+  geom_bar(position = "dodge") +
+  labs(title = "Influence of balanced diet on Cancer Level",
+       x = "balanced diet",
+       y = "Count",
+       fill = "Level")
+
+
+  
+
+```
+
+
+The graph represents the relationship between the level of Cancer and Balanced Diet. Higher exposure to non-balanced diet can contribute to an increase in the level of cancer.
+
+
+We have understood the association between lifestyle variables and target column, now lets build a Logistic Regression model between the lifestyle variables and level of cancer which will give us more comprehensive understanding to draw a conclusion for the hypothesis. 
+
+## Building LR model between Obesity and level of cancer
+
+```{r}
+library(nnet)
+
+# create a multinomial logistic regression model
+model <- multinom(Level ~ Obesity, data = df)
+
+# print the summary of the model
+summary(model)
+
+  
+
+```
+
+## Building LR model between Alcohol.use and level of cancer
+
+```{r}
+library(nnet)
+
+# create a multinomial logistic regression model
+model <- multinom(Level ~ Alcohol.use, data = df)
+
+# print the summary of the model
+summary(model)
+
+  
+
+```
+
+## Building LR model between Smoking and level of cancer
+
+```{r}
+library(nnet)
+
+# create a multinomial logistic regression model
+model <- multinom(Level ~ Smoking, data = df)
+
+# print the summary of the model
+summary(model)
+
+  
+
+```
+
+## Building LR model between Passive smoking and level of cancer
+
+```{r}
+library(nnet)
+
+# create a multinomial logistic regression model
+model <- multinom(Level ~ Passive.Smoker, data = df)
+
+# print the summary of the model
+summary(model)
+
+  
+
+```
+
+## Building LR model between Balanced Diet and level of cancer
+
+```{r}
+library(nnet)
+
+# create a multinomial logistic regression model
+model <- multinom(Level ~ Balanced.Diet, data = df)
+
+# print the summary of the model
+summary(model)
+
+  
+
+```
+
+We can observe that of all the above Logistic Regression models done for the 5 variables with the target variable, one can observe that passive smoking, alcohol.use and obesity have the lowest AIC value and residual deviance which interprets that Logistic regression is a good fit for the data. 
+
+We tried different combinations of the 5 lifestyle variables to build a LR model with the best AIC value in order to understand the best fit and complexity for the given data.
+
+## Building LR model with the best AIC value
+```{r}
+library(nnet)
+# create a multinomial logistic regression model
+model <- multinom(Level ~ Obesity*Alcohol.use+Passive.Smoker, data = df)
+# print the summary of the model
+summary(model)
+```
+
+
+## Results
+
+The results of P-value for each variable in the dataset by doing Fisher's exact test gives an interpretation that all the variables show a significant association with the target variable.
+Hence, with the help of Logistic regression model, When compared individually passive smoking has the lowest AIC value and Residual deviance hence showing highest association with the target variable and when we finally combine different lifestyle variables to attain a lower AIC value and lower deviance, obesity, Alcohol.Use and Passive smoking variables together can predict a good model fit while giving lowest AIC score and lower residual deviance. 
+
+Looking at this statistical testing and above results, we can reject the null hypothesis and prove that there is a significant association between the lifestyle variables (highest association with passive smoking) and the level of cancer thus answering the research question.
