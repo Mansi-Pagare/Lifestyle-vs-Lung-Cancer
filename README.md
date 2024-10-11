@@ -12,8 +12,6 @@ In this project, a detailed statistical analysis was conducted to investigate th
 1. Install R from [CRAN](https://cran.r-project.org/).
 2. Install RStudio from [RStudio's website](https://www.rstudio.com/products/rstudio/download/).
 3. Clone this repository:
-   ```bash
-   git clone https://github.com/yourusername/Lung-Cancer-Statistical-Inquiry.git
 4. Open the .Rmd file in RStudio.
 
 ### Running the Analysis
